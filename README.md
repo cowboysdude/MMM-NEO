@@ -28,7 +28,7 @@ Works without an API key (it uses NASA's `DEMO_KEY`, which is limited). If you s
     module: "MMM-NEO",
     position: "top_left",              // best in left, right or center regions
     config: {
-        rotateInterval: 5 * 60 * 1000, // next object every 5 minutes
+        rotateInterval: 30 * 1000,     // next object every 30 seconds
         maxWidth: "275px"
     }
 },
@@ -36,7 +36,7 @@ Works without an API key (it uses NASA's `DEMO_KEY`, which is limited). If you s
 
 | Option | Default | What it does |
 |---|---|---|
-| `rotateInterval` | `300000` | How often to show the next object, in milliseconds (5 minutes). |
+| `rotateInterval` | `30000` | How often to show the next object, in milliseconds (30 seconds). |
 | `maxWidth` | `"275px"` | Width of the module. |
 | `useHeader` / `header` | `false` / `""` | Show a header above the module. |
 | `animationSpeed` | `3000` | Fade between objects, in milliseconds. |

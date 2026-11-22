@@ -6,7 +6,7 @@
  */
 Module.register("MMM-NEO", {
 	defaults: {
-		rotateInterval: 5 * 60 * 1000,   // show the next object every 5 minutes
+		rotateInterval: 30 * 1000,       // show the next object every 30 seconds
 		useHeader: false,                // true if you want a header
 		header: "",
 		maxWidth: "275px",
@@ -60,7 +60,9 @@ Module.register("MMM-NEO", {
 			// closest pass first
 			this.objects = payload.objects.slice().sort((a, b) =>
 				Number(a.close_approach_data[0].miss_distance.kilometers) - Number(b.close_approach_data[0].miss_distance.kilometers));
-			this.activeItem = 0;
+			// keep showing the same object after an hourly refresh; start over only on a new day
+			if (payload.date !== this.shownDate || this.activeItem >= this.objects.length) this.activeItem = 0;
+			this.shownDate = payload.date;
 			this.loaded = true;
 			this.error = null;
 			this.updateDom(this.config.animationSpeed);
