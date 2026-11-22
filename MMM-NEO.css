@@ -18,3 +18,6 @@
   color: white;               /* Color the information. Default is white. */
   text-align: left;           /* Align the information. (left, center, right) */
 }
+.MMM-NEO .neo-hazard {
+  color: #ff8a65;             /* "Potentially hazardous: Yes" stands out */
+}
