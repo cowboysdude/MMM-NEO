@@ -16,7 +16,9 @@ Module.register("MMM-NEO", {
 		units: config.units,             // "imperial" = miles and mph, "metric" = km and km/h
 		showCount: true,                 // "1 of 12 passing Earth today" (one-at-a-time mode)
 		showAll: true,                   // true = list all of today's objects at once | false = one at a time
-		maxObjects: 6                    // most objects to list when showAll is true
+		maxObjects: 6,                   // most objects to list when showAll is true
+		css: "light",                    // "light" = white card | "dark" = dark card | "" = plain text (old look)
+		width: 330                       // card width in pixels (matches MMM-NOAAV4)
 	},
 
 	requiresVersion: "2.1.0",
@@ -85,7 +87,70 @@ Module.register("MMM-NEO", {
 		return d;
 	},
 
+	// ---- card look (css: "light" or "dark") ----
+	short (n, unit) {
+		n = Number(n);
+		if (n >= 1e6) return `${(n / 1e6).toFixed(n >= 1e7 ? 1 : 2)}M ${unit}`;
+		if (n >= 1e4) return `${Math.round(n / 1e3)}K ${unit}`;
+		return `${Math.round(n).toLocaleString()} ${unit}`;
+	},
+
+	stat (label, value, sub) {
+		return `<div class="neo-stat"><div class="neo-slabel">${label}</div><div class="neo-svalue">${value}</div>${sub ? `<div class="neo-ssub">${sub}</div>` : ""}</div>`;
+	},
+
+	rock (neo) {
+		const pass = neo.close_approach_data[0];
+		const imperial = this.config.units === "imperial";
+		const moons = Number(pass.miss_distance.kilometers) / 384400;
+		const when = pass.epoch_date_close_approach
+			? moment(pass.epoch_date_close_approach).format(config.timeFormat === 24 ? "HH:mm" : "h:mm A")
+			: "";
+		const hazard = neo.is_potentially_hazardous_asteroid ? "<span class='neo-chip'>Hazardous</span>" : "";
+		const name = String(neo.name).replace(/[()]/g, "");
+		return `<div class="neo-rock">
+			<div class="neo-rhead"><span class="neo-name">${name}</span>${hazard}<span class="neo-when">${when}</span></div>
+			<div class="neo-stats">
+				${this.stat("Misses by", imperial ? this.short(pass.miss_distance.miles, "mi") : this.short(pass.miss_distance.kilometers, "km"),
+					`${moons < 10 ? moons.toFixed(1) : Math.round(moons)}&times; the Moon`)}
+				${this.stat("Size", imperial ? `${this.num(neo.estimated_diameter.feet.estimated_diameter_max)} ft` : `${this.num(neo.estimated_diameter.meters.estimated_diameter_max)} m`)}
+				${this.stat("Speed", imperial ? `${this.num(pass.relative_velocity.miles_per_hour)} mph` : `${this.num(pass.relative_velocity.kilometers_per_hour)} km/h`)}
+			</div>
+		</div>`;
+	},
+
 	getDom () {
+		const style = String(this.config.css || "").toLowerCase();
+		if (style !== "light" && style !== "dark") return this.getDomPlain();
+
+		const card = document.createElement("div");
+		card.className = style === "dark" ? "neo-card neo-dark" : "neo-card";
+		const width = parseInt(this.config.width, 10);
+		if (width > 0) card.style.width = `${width}px`;
+
+		const count = this.loaded ? this.objects.length : 0;
+		const sub = !this.loaded
+			? (this.error ? "NASA data not available right now" : "Loading…")
+			: count === 0 ? "None passing today"
+			: this.config.showAll ? `Today · ${count} passing Earth`
+			: `Today · ${this.activeItem + 1} of ${count}`;
+		let html = `<div class="neo-head">
+			<div class="neo-badge"><i class="fa-solid fa-meteor"></i></div>
+			<div><div class="neo-title">${this.config.header || "Near-Earth Asteroids"}</div><div class="neo-sub">${sub}</div></div>
+		</div>`;
+
+		if (this.loaded && count) {
+			const list = this.config.showAll
+				? this.objects.slice(0, Math.max(1, this.config.maxObjects))
+				: [this.objects[this.activeItem] || this.objects[0]];
+			html += list.map((n) => this.rock(n)).join("");
+			if (this.config.showAll && count > list.length) html += `<div class="neo-more">+ ${count - list.length} more today</div>`;
+		}
+		card.innerHTML = html;
+		return card;
+	},
+
+	getDomPlain () {
 		const wrapper = document.createElement("div");
 		wrapper.className = "wrapper";
 		wrapper.style.maxWidth = this.config.maxWidth;

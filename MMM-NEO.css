@@ -25,3 +25,74 @@
 .MMM-NEO .neo-row {
   margin-top: 6px;            /* space between objects in the list */
 }
+
+/* ---------- card look (css: "light" default, or "dark") ---------- */
+.MMM-NEO .neo-card {
+  width: 330px;
+  box-sizing: border-box;
+  padding: 14px 16px 12px;
+  border-radius: 6px;
+  background: #fff;
+  color: #212121;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: "Roboto", "Segoe UI", sans-serif;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.MMM-NEO .neo-head { display: flex; align-items: center; gap: 12px; }
+
+.MMM-NEO .neo-badge {
+  flex: 0 0 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ff9800, #e64a19);
+  color: #fff;
+  font-size: 18px;
+}
+
+.MMM-NEO .neo-title { font-size: 20px; font-weight: 500; }
+.MMM-NEO .neo-sub { font-size: 13px; color: #727272; margin-top: 2px; }
+
+.MMM-NEO .neo-rock {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.MMM-NEO .neo-rhead { display: flex; align-items: center; gap: 8px; }
+.MMM-NEO .neo-name { font-size: 16px; font-weight: 500; }
+.MMM-NEO .neo-when { margin-left: auto; font-size: 13px; color: #727272; }
+
+.MMM-NEO .neo-chip {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #ffebee;
+  color: #c62828;
+}
+
+.MMM-NEO .neo-stats { display: flex; margin-top: 6px; }
+.MMM-NEO .neo-stat { flex: 1; min-width: 0; }
+.MMM-NEO .neo-stat + .neo-stat { padding-left: 10px; border-left: 1px solid #eeeeee; margin-left: 10px; }
+.MMM-NEO .neo-slabel { font-size: 11px; color: #727272; text-transform: uppercase; letter-spacing: 0.04em; }
+.MMM-NEO .neo-svalue { font-size: 15px; font-weight: 500; margin-top: 2px; white-space: nowrap; }
+.MMM-NEO .neo-ssub { font-size: 11px; color: #727272; margin-top: 1px; white-space: nowrap; }
+.MMM-NEO .neo-more { margin-top: 10px; font-size: 12px; color: #727272; text-align: center; }
+
+/* dark card */
+.MMM-NEO .neo-card.neo-dark { background: #1e2530; color: #eceff1; }
+.MMM-NEO .neo-dark .neo-sub,
+.MMM-NEO .neo-dark .neo-when,
+.MMM-NEO .neo-dark .neo-slabel,
+.MMM-NEO .neo-dark .neo-ssub,
+.MMM-NEO .neo-dark .neo-more { color: #9aa5b1; }
+.MMM-NEO .neo-dark .neo-rock { border-top-color: #34404e; }
+.MMM-NEO .neo-dark .neo-stat + .neo-stat { border-left-color: #34404e; }
+.MMM-NEO .neo-dark .neo-chip { background: #4a1f24; color: #ff8a80; }

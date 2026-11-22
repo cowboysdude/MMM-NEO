@@ -41,6 +41,8 @@ Works without an API key (it uses NASA's `DEMO_KEY`, which is limited). If you s
 | `useHeader` / `header` | `false` / `""` | Show a header above the module. |
 | `animationSpeed` | `3000` | Fade between objects, in milliseconds. |
 | `units` | your config's `units` | `"imperial"` = miles, feet and mph. `"metric"` = km, meters and km/h. |
+| `css` | `"light"` | `"light"` = white card, `"dark"` = dark card (both match MMM-NOAAV4). `""` = the original plain text look. |
+| `width` | `330` | Card width in pixels. |
 | `showAll` | `true` | `true` = list all of today's objects at once (closest first). `false` = one at a time, switching every `rotateInterval`. |
 | `maxObjects` | `6` | Most objects to list when `showAll` is on. |
 | `showCount` | `true` | "1 of 12 passing Earth today" line in one-at-a-time mode. |
@@ -52,6 +54,7 @@ Works without an API key (it uses NASA's `DEMO_KEY`, which is limited). If you s
 - **Fixed:** wouldn't start on current MagicMirror (it needed the old `request` package, which MagicMirror no longer includes; now uses built-in `fetch`).
 - **Fixed:** stopped showing objects after midnight (it never noticed the date changed).
 - **Fixed:** crashed on a day with no objects.
+- **New card look** (light or dark) with a meteor badge, today's count, and each asteroid's miss distance (also as "× the Moon"), size, speed and closest-approach time.
 - Closest pass shown first; miles/mph with imperial units; numbers with commas; closest-approach time; "Potentially hazardous: Yes" highlighted; optional `apiKey`.
 
 Voice control: send `HIDE_NEO` or `SHOW_NEO`.
