@@ -6,7 +6,7 @@
  */
 Module.register("MMM-NEO", {
 	defaults: {
-		rotateInterval: 30 * 1000,       // show the next object every 30 seconds
+		rotateInterval: 20 * 1000,       // show the next object every 20 seconds
 		useHeader: false,                // true if you want a header
 		header: "",
 		maxWidth: "275px",
@@ -15,7 +15,7 @@ Module.register("MMM-NEO", {
 		apiKey: "",                      // optional: your free key from https://api.nasa.gov (DEMO_KEY is used if empty)
 		units: config.units,             // "imperial" = miles and mph, "metric" = km and km/h
 		showCount: true,                 // "1 of 12 passing Earth today" (one-at-a-time mode)
-		showAll: true,                   // true = list all of today's objects at once | false = one at a time
+		showAll: false,                  // false = one at a time (header stays, the asteroid fades to the next) | true = list them all
 		maxObjects: 6,                   // most objects to list when showAll is true
 		css: "light",                    // "light" = white card | "dark" = dark card | "" = plain text (old look)
 		width: 330                       // card width in pixels (matches MMM-NOAAV4)
@@ -42,11 +42,11 @@ Module.register("MMM-NEO", {
 			if (moment().format("YYYY-MM-DD") !== this.date) this.getNEO();
 		}, 60 * 1000);
 		setInterval(() => {
-			if (this.objects.length > 1) {
+			if (this.objects.length > 1 && !this.config.showAll) {
 				this.activeItem = (this.activeItem + 1) % this.objects.length;
-				this.updateDom(this.config.animationSpeed);
+				if (!this.swapRock()) this.updateDom(this.config.animationSpeed);
 			}
-		}, this.config.rotateInterval);
+		}, Math.max(3000, this.config.rotateInterval));
 	},
 
 	getNEO () {
@@ -119,6 +119,36 @@ Module.register("MMM-NEO", {
 		</div>`;
 	},
 
+	isCard () {
+		const style = String(this.config.css || "").toLowerCase();
+		return style === "light" || style === "dark";
+	},
+
+	subText () {
+		const count = this.loaded ? this.objects.length : 0;
+		if (!this.loaded) return this.error ? "NASA data not available right now" : "Loading…";
+		if (count === 0) return "None passing today";
+		if (this.config.showAll || count === 1) return `Today · ${count} passing Earth`;
+		return `Today · ${this.activeItem + 1} of ${count} passing Earth`;
+	},
+
+	// card, one at a time: fade only the asteroid area and keep the header (like a ticker)
+	swapRock () {
+		if (!this.isCard()) return false;
+		const root = document.getElementById(this.identifier);
+		const body = root && root.querySelector(".neo-body");
+		const sub = root && root.querySelector(".neo-sub");
+		if (!body) return false;
+		const neo = this.objects[this.activeItem];
+		body.classList.add("neo-fade");
+		setTimeout(() => {
+			body.innerHTML = this.rock(neo);
+			if (sub) sub.textContent = this.subText();
+			body.classList.remove("neo-fade");
+		}, 600);
+		return true;
+	},
+
 	getDom () {
 		const style = String(this.config.css || "").toLowerCase();
 		if (style !== "light" && style !== "dark") return this.getDomPlain();
@@ -129,11 +159,7 @@ Module.register("MMM-NEO", {
 		if (width > 0) card.style.width = `${width}px`;
 
 		const count = this.loaded ? this.objects.length : 0;
-		const sub = !this.loaded
-			? (this.error ? "NASA data not available right now" : "Loading…")
-			: count === 0 ? "None passing today"
-			: this.config.showAll ? `Today · ${count} passing Earth`
-			: `Today · ${this.activeItem + 1} of ${count}`;
+		const sub = this.subText();
 		let html = `<div class="neo-head">
 			<div class="neo-badge"><i class="fa-solid fa-meteor"></i></div>
 			<div><div class="neo-title">${this.config.header || "Near-Earth Asteroids"}</div><div class="neo-sub">${sub}</div></div>
@@ -143,7 +169,9 @@ Module.register("MMM-NEO", {
 			const list = this.config.showAll
 				? this.objects.slice(0, Math.max(1, this.config.maxObjects))
 				: [this.objects[this.activeItem] || this.objects[0]];
-			html += list.map((n) => this.rock(n)).join("");
+			html += this.config.showAll
+				? list.map((n) => this.rock(n)).join("")
+				: `<div class="neo-body">${this.rock(list[0])}</div>`;
 			if (this.config.showAll && count > list.length) html += `<div class="neo-more">+ ${count - list.length} more today</div>`;
 		}
 		card.innerHTML = html;

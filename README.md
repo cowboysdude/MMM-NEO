@@ -4,7 +4,7 @@ Near Earth Objects.
 Have you ever wondered how many Near Earth Objects are passing our planet every day?
 How big are they? How fast are they travelling? Are they potentially dangerous? Be afraid. Be VERY afraid!
 
-Shows today's asteroids passing Earth from NASA's NeoWs data, closest pass first: all at once as a list, or one at a time.
+Shows today's asteroids passing Earth from NASA's NeoWs data, closest pass first, one at a time: the header stays put and each asteroid fades to the next, so it takes the same space however many there are.
 
 ![](pix/1.JPG), ![](pix/2.JPG),
 
@@ -28,7 +28,7 @@ Works without an API key (it uses NASA's `DEMO_KEY`, which is limited). If you s
     module: "MMM-NEO",
     position: "top_left",              // best in left, right or center regions
     config: {
-        rotateInterval: 30 * 1000,     // next object every 30 seconds
+        rotateInterval: 20 * 1000,     // next asteroid every 20 seconds
         maxWidth: "275px"
     }
 },
@@ -36,14 +36,14 @@ Works without an API key (it uses NASA's `DEMO_KEY`, which is limited). If you s
 
 | Option | Default | What it does |
 |---|---|---|
-| `rotateInterval` | `30000` | How often to show the next object, in milliseconds (30 seconds). |
+| `rotateInterval` | `20000` | How often to show the next asteroid, in milliseconds (20 seconds). |
 | `maxWidth` | `"275px"` | Width of the module. |
 | `useHeader` / `header` | `false` / `""` | Show a header above the module. |
 | `animationSpeed` | `3000` | Fade between objects, in milliseconds. |
 | `units` | your config's `units` | `"imperial"` = miles, feet and mph. `"metric"` = km, meters and km/h. |
 | `css` | `"light"` | `"light"` = white card, `"dark"` = dark card (both match MMM-NOAAV4). `""` = the original plain text look. |
 | `width` | `330` | Card width in pixels. |
-| `showAll` | `true` | `true` = list all of today's objects at once (closest first). `false` = one at a time, switching every `rotateInterval`. |
+| `showAll` | `false` | `false` = one asteroid at a time: the header stays and the asteroid fades to the next every `rotateInterval`, so the card never grows. `true` = list them all (up to `maxObjects`). |
 | `maxObjects` | `6` | Most objects to list when `showAll` is on. |
 | `showCount` | `true` | "1 of 12 passing Earth today" line in one-at-a-time mode. |
 | `apiKey` | `""` | Your free NASA key from https://api.nasa.gov. Empty = `DEMO_KEY`. |

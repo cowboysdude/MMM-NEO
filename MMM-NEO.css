@@ -96,3 +96,7 @@
 .MMM-NEO .neo-dark .neo-rock { border-top-color: #34404e; }
 .MMM-NEO .neo-dark .neo-stat + .neo-stat { border-left-color: #34404e; }
 .MMM-NEO .neo-dark .neo-chip { background: #4a1f24; color: #ff8a80; }
+
+/* one at a time: the asteroid area fades out and in; the header stays */
+.MMM-NEO .neo-body { transition: opacity 0.6s ease; }
+.MMM-NEO .neo-body.neo-fade { opacity: 0; }
