@@ -4,7 +4,7 @@ Near Earth Objects.
 Have you ever wondered how many Near Earth Objects are passing our planet every day?
 How big are they? How fast are they travelling? Are they potentially dangerous? Be afraid. Be VERY afraid!
 
-Shows today's asteroids passing Earth from NASA's NeoWs data, one at a time, closest pass first.
+Shows today's asteroids passing Earth from NASA's NeoWs data, closest pass first: all at once as a list, or one at a time.
 
 ![](pix/1.JPG), ![](pix/2.JPG),
 
@@ -41,7 +41,9 @@ Works without an API key (it uses NASA's `DEMO_KEY`, which is limited). If you s
 | `useHeader` / `header` | `false` / `""` | Show a header above the module. |
 | `animationSpeed` | `3000` | Fade between objects, in milliseconds. |
 | `units` | your config's `units` | `"imperial"` = miles, feet and mph. `"metric"` = km, meters and km/h. |
-| `showCount` | `true` | "1 of 12 passing Earth today" line. |
+| `showAll` | `true` | `true` = list all of today's objects at once (closest first). `false` = one at a time, switching every `rotateInterval`. |
+| `maxObjects` | `6` | Most objects to list when `showAll` is on. |
+| `showCount` | `true` | "1 of 12 passing Earth today" line in one-at-a-time mode. |
 | `apiKey` | `""` | Your free NASA key from https://api.nasa.gov. Empty = `DEMO_KEY`. |
 | `updateInterval` | `3600000` | How often to ask NASA, in milliseconds (once an hour). Keep it: `DEMO_KEY` is limited. |
 

@@ -14,7 +14,9 @@ Module.register("MMM-NEO", {
 		updateInterval: 60 * 60 * 1000,  // ask NASA once an hour (keep it: DEMO_KEY is limited)
 		apiKey: "",                      // optional: your free key from https://api.nasa.gov (DEMO_KEY is used if empty)
 		units: config.units,             // "imperial" = miles and mph, "metric" = km and km/h
-		showCount: true                  // "12 objects pass Earth today"
+		showCount: true,                 // "1 of 12 passing Earth today" (one-at-a-time mode)
+		showAll: true,                   // true = list all of today's objects at once | false = one at a time
+		maxObjects: 6                    // most objects to list when showAll is true
 	},
 
 	requiresVersion: "2.1.0",
@@ -102,6 +104,27 @@ Module.register("MMM-NEO", {
 
 		if (!this.objects.length) {
 			wrapper.appendChild(this.line("small bright", "", "No Near Earth Objects today."));
+			return wrapper;
+		}
+
+		if (this.config.showAll) {
+			const imperial = this.config.units === "imperial";
+			const list = this.objects.slice(0, Math.max(1, this.config.maxObjects));
+			wrapper.appendChild(this.line("xsmall dimmed", "", `${this.objects.length} passing Earth today`));
+			list.forEach((neo) => {
+				const pass = neo.close_approach_data[0];
+				const row = document.createElement("div");
+				row.className = "neo-row";
+				row.appendChild(this.line("small bright", "", neo.name + (neo.is_potentially_hazardous_asteroid ? " <span class='neo-hazard'>hazardous</span>" : "")));
+				const miss = imperial ? `${this.num(pass.miss_distance.miles)} mi` : `${this.num(pass.miss_distance.kilometers)} km`;
+				const size = imperial ? `${this.num(neo.estimated_diameter.feet.estimated_diameter_max)} ft` : `${this.num(neo.estimated_diameter.meters.estimated_diameter_max)} m`;
+				const speed = imperial ? `${this.num(pass.relative_velocity.miles_per_hour)} mph` : `${this.num(pass.relative_velocity.kilometers_per_hour)} km/h`;
+				row.appendChild(this.line("xsmall", "", `Misses by ${miss} · ${size} · ${speed}`));
+				wrapper.appendChild(row);
+			});
+			if (this.objects.length > list.length) {
+				wrapper.appendChild(this.line("xsmall dimmed", "", `+ ${this.objects.length - list.length} more`));
+			}
 			return wrapper;
 		}
 

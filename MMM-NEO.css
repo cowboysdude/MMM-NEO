@@ -21,3 +21,7 @@
 .MMM-NEO .neo-hazard {
   color: #ff8a65;             /* "Potentially hazardous: Yes" stands out */
 }
+
+.MMM-NEO .neo-row {
+  margin-top: 6px;            /* space between objects in the list */
+}
